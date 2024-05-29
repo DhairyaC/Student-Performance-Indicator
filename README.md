@@ -1,1 +1,1 @@
-## Steps to perform End-to-End ML Project using CI/CD pipelines
+## End-to-End ML Project using CI/CD pipelines
