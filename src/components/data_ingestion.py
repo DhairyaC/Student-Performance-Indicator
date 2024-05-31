@@ -17,26 +17,36 @@ class DataIngestion:
         self.ingestion_config = DataIngestionConfig()
     
     def initiate_data_ingestion(self):
-        logging.info("Initiated the data ingestion process")
+        '''
+        This function initiates the data ingestion.
+
+        returns: Tuple of three paths (train, test, and raw data)
+        '''
+        logging.info("Initiating the data ingestion process")
         try:
+            # Read data from the source (database, local files, etc)
             df = pd.read_csv("data/StudentsPerformance.csv")
-            logging.info("Imported the data")
+            logging.info("Data is imported and read as a dataframe")
 
+            # Creating directories
+            logging.info("Creating artifacts directory and save the raw data")
             os.makedirs(os.path.dirname(self.ingestion_config.train_data_path), exist_ok=True)
-
             df.to_csv(self.ingestion_config.raw_data_path, index=False, header=True)
 
-            logging.info("Initiated train/test split")
+            # Split the data into train and test
+            logging.info("Initiating train/test split")
             train_set, test_set = train_test_split(df, test_size=0.2, random_state=42)
             train_set.to_csv(self.ingestion_config.train_data_path, index=False, header=True)
             test_set.to_csv(self.ingestion_config.test_data_path, index=False, header=True)
-            logging.info("Train/Test split completed")
+            
+            logging.info("Data Ingestion is completed")
 
             return (
                 self.ingestion_config.train_data_path,
                 self.ingestion_config.test_data_path
             )
         except Exception as e:
+            logging.info(f"Exception is raised: {e}")
             raise CustomException(e, sys)
         
 if __name__ == "__main__":
