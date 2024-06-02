@@ -5,8 +5,8 @@ from src.exception import CustomException
 import pandas as pd
 from dataclasses import dataclass
 from sklearn.model_selection import train_test_split
-from src.components.data_transformation import DataTransformation
-from src.components.data_transformation import DataTransformationConfig
+from src.components.data_transformation import DataTransformation, DataTransformationConfig
+from src.components.model_trainer import ModelTrainer, ModelTrainerConfig
 
 @dataclass
 class DataIngestionConfig:
@@ -56,11 +56,7 @@ if __name__ == "__main__":
     train_data, test_data = di_obj.initiate_data_ingestion()
 
     dt_obj = DataTransformation()
-    dt_obj.initiate_data_transformation(train_data, test_data)
+    train_arr, test_arr, preprocessor_path = dt_obj.initiate_data_transformation(train_data, test_data)
 
-
-
-
-
-
-
+    mt_obj = ModelTrainer()
+    print(mt_obj.initiate_model_trainer(train_arr, test_arr))
