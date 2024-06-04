@@ -3,6 +3,7 @@ import sys
 import numpy as np
 import pandas as pd
 import dill
+import pickle
 from src.logger import logging
 from src.exception import CustomException
 from sklearn.metrics import r2_score
@@ -14,11 +15,21 @@ def save_object(obj, file_path):
         dir_path = os.path.dirname(file_path)
         os.makedirs(dir_path, exist_ok=True)
 
-        with open(file_path, "wb") as file_obj:
-            dill.dump(obj, file_obj)
+        with open(file_path, 'wb') as file_obj:
+            pickle.dump(obj, file_obj)
     except Exception as e:
         logging.info("Error is raised: {e}")
         raise CustomException(e, sys)
+    
+
+def load_object(file_path):
+    try:
+        with open(file_path, 'rb') as file_obj:
+            return pickle.load(file_obj)
+    except Exception as e:
+        logging.info("Error is raised: {e}")
+        raise CustomException(e, sys)
+    
     
 def evaluate_models(self, X_train, y_train, X_test, y_test, models, param):
     try:
@@ -29,7 +40,7 @@ def evaluate_models(self, X_train, y_train, X_test, y_test, models, param):
 
             params = param[list(models.keys())[i]]
 
-            gs = GridSearchCV(model, params, cv=5, n_jobs=5)
+            gs = GridSearchCV(model, params, cv=5)
             gs.fit(X_train, y_train)
 
             model.set_params(**gs.best_params_)
